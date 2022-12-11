@@ -3,9 +3,12 @@
 namespace Mmstfkc\BasicCrud\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Mmstfkc\BasicCrud\app\Traits\FilterParseTrait;
 
 class MultipleFilter implements Rule
 {
+    use FilterParseTrait;
+
     protected array $keyText;
     protected array|null $valueText;
     protected string $errorMessage;
@@ -60,32 +63,6 @@ class MultipleFilter implements Rule
         return false;
     }
 
-    function parseFilterData(string|array $rawText): array
-    {
-        if (is_string($rawText)) {
-            $rawText = [$rawText];
-        }
-
-        $data = [];
-
-        foreach ($rawText as $text) {
-            if ($parsedData = strpos($text, config('basicCrud.parse_character'))) {
-                $value = substr($text, ($parsedData + 1));
-
-                if (in_array($value, ['true', 'false'])) {
-                    $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                }
-
-                if (is_numeric($value)) {
-                    $value = floor($value) == $value ? (int)$value : (float)$value;
-                }
-
-                $data[substr($text, 0, $parsedData)] = $value;
-            }
-        }
-
-        return $data;
-    }
 
     /**
      * Get the validation error message.

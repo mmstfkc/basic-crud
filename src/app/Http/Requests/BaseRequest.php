@@ -1,7 +1,8 @@
 <?php
 
-namespace Mmstfkc\BasicCrud\app\Requests;
+namespace Mmstfkc\BasicCrud\app\Http\Requests;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +13,7 @@ class BaseRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -29,7 +30,13 @@ class BaseRequest extends FormRequest
         ];
     }
 
-    protected function getColumnName(string $modelName, string $functionName)
+    /**
+     * @param string $modelName
+     * @param string $functionName
+     * @return array
+     * @throws BindingResolutionException
+     */
+    protected function getColumnName(string $modelName, string $functionName): array
     {
         $model = app()->make($modelName);
         $allColumnNames = DB::getSchemaBuilder()->getColumnListing($model->getTable());
@@ -48,7 +55,7 @@ class BaseRequest extends FormRequest
             return $allColumnNames;
         } else {
 
-            return [1];
+            return [];
         }
     }
 }

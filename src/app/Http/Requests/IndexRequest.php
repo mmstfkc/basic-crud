@@ -1,6 +1,6 @@
 <?php
 
-namespace Mmstfkc\BasicCrud\app\Requests;
+namespace Mmstfkc\BasicCrud\app\Http\Requests;
 
 use Mmstfkc\BasicCrud\Rules\MultipleFilter;
 
