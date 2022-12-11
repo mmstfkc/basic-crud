@@ -1,0 +1,19 @@
+{
+    "name": "mmstfkc/basic-crud",
+    "description": "This structure is designed for use in basic CRUD operations.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Mmstfkc\\BasicCrud\\": "src\\"
+        }
+    },
+    "authors": [
+        {
+            "name": "Mustafa KOC",
+            "email": "mmstfkc23.61@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
