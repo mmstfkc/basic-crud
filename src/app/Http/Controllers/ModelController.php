@@ -44,12 +44,19 @@ class ModelController extends Controller
         return $this->sendSuccessResponse($dbData);
     }
 
+    /**
+     * @param int $id
+     * @return mixed
+     */
     public function detail(int $id)
     {
         $data = $this->model->where('id', $id)->first();
         return $this->sendSuccessResponse(new IndexResource($data));
     }
 
+    /**
+     * @return void
+     */
     public function store()
     {
         dd('store');
