@@ -52,10 +52,28 @@ class BaseRequest extends FormRequest
                     }
                 }
             }
-            return $allColumnNames;
         } else {
+            if ($fillable = $model->getFillable()) {
+                return $fillable;
+            }
 
-            return [];
+            $guarded = $model->getGuarded();
+
+            if (in_array('*', $guarded)) {
+                return [];
+            }
+
+            unset($allColumnNames[array_search('id', $allColumnNames)]);
+
+            foreach ($guarded as $guard) {
+                foreach ($allColumnNames as $key => $allColumnName) {
+                    if ($allColumnName == $guard) {
+                        unset($allColumnNames[$key]);
+                    }
+                }
+            }
         }
+
+        return $allColumnNames;
     }
 }

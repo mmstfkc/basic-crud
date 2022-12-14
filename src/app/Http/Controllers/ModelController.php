@@ -3,8 +3,12 @@
 namespace Mmstfkc\BasicCrud\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Mmstfkc\BasicCrud\app\Http\Requests\IndexRequest;
+use Mmstfkc\BasicCrud\app\Http\Requests\StoreRequest;
+use Mmstfkc\BasicCrud\app\Http\Requests\UpdateRequest;
 use Mmstfkc\BasicCrud\app\Http\Resources\IndexResource;
 use Mmstfkc\BasicCrud\app\Http\Resources\PaginateResource;
 
@@ -17,7 +21,8 @@ class ModelController extends Controller
 
     /**
      * @param string $modelName
-     * @param string $indexRequest
+     * @param string|null $indexRequest
+     * @throws BindingResolutionException
      */
     public function __construct(string $modelName, string $indexRequest = null)
     {
@@ -26,8 +31,11 @@ class ModelController extends Controller
         $this->indexRequest = $indexRequest;
     }
 
-
-    public function index(IndexRequest $request)
+    /**
+     * @param IndexRequest $request
+     * @return JsonResponse
+     */
+    public function index(IndexRequest $request): JsonResponse
     {
         $requestData = $request->validated();
 
@@ -46,29 +54,66 @@ class ModelController extends Controller
 
     /**
      * @param int $id
-     * @return mixed
+     * @return JsonResponse
      */
-    public function detail(int $id)
+    public function detail(int $id): JsonResponse
     {
         $data = $this->model->where('id', $id)->first();
         return $this->sendSuccessResponse(new IndexResource($data));
     }
 
     /**
-     * @return void
+     * @param StoreRequest $request
+     * @return JsonResponse
      */
-    public function store()
+    public function store(StoreRequest $request): JsonResponse
     {
-        dd('store');
+        if ($this->model->create($request->validated())) {
+            return $this->sendSuccessResponse();
+        }
+
+        return $this->sendError();
+
     }
 
-    public function update()
+    public function update(UpdateRequest $request, int $id)
     {
         dd('update');
     }
 
-    public function delete($id)
+    /**
+     * @param $id
+     * @return JsonResponse
+     */
+    public function delete($id): JsonResponse
     {
-        dd('delete');
+        $isDelete = $this->model->where('id', $id)->first()->delete();
+
+        if ($isDelete) {
+            return $this->sendSuccessResponse();
+        }
+
+        return $this->sendError();
     }
+
+    public function sendSuccessResponse($data = null)
+    {
+        return response()->json([
+            'status' => true,
+            'code' => 1000,
+            'message' => 'success',
+            'data' => $data
+        ]);
+    }
+
+    public function sendError($data = null)
+    {
+        return response()->json([
+            'status' => false,
+            'code' => 1001,
+            'message' => 'error',
+            'error' => $data
+        ]);
+    }
+
 }
