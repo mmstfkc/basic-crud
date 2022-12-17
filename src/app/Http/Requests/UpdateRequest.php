@@ -12,6 +12,6 @@ class UpdateRequest extends BaseRequest
      */
     public function rules(): array
     {
-        return $this->getRules('update', $this->getColumns(), $this->getColumnTypes());
+        return $this->getRules('update');
     }
 }

@@ -91,17 +91,6 @@ class BaseRequest extends FormRequest
     }
 
     /**
-     * @return array
-     * @throws BindingResolutionException
-     */
-    protected function getColumns(): array
-    {
-        $modelName = $this->route()->getController()->modelName;
-
-        return $this->getColumnName($modelName, 'store');
-    }
-
-    /**
      * @throws BindingResolutionException
      */
     protected function getColumnTypes(): Collection
@@ -117,6 +106,8 @@ class BaseRequest extends FormRequest
     {
         $modelName = $this->route()->getController()->modelName;
         $model = app()->make($modelName);
+
+
         $tableName = $model->getTable();
         return DB::table('information_schema.columns')->where('table_name', $tableName)
             ->select(
@@ -133,24 +124,26 @@ class BaseRequest extends FormRequest
 
     /**
      * @param string $method
-     * @param array $columns
-     * @param Collection $columnTypes
      * @return array
+     * @throws BindingResolutionException
      */
-    protected function getRules(string $method, array $columns, Collection $columnTypes): array
+    protected function getRules(string $method): array
     {
-        return $this->postgreSqlRule($method, $columns, $columnTypes);
+        return $this->postgreSqlRule($method);
     }
 
     /**
      * @param string $method
-     * @param array $columns
-     * @param Collection $columnTypes
      * @return array
+     * @throws BindingResolutionException
      */
-    protected function postgreSqlRule(string $method, array $columns, Collection $columnTypes): array
+    protected function postgreSqlRule(string $method): array
     {
         $rules = [];
+
+        $modelName = $this->route()->getController()->modelName;
+        $columns = $this->getColumnName($modelName, 'store');
+        $columnTypes = $this->getColumnTypes();
 
         foreach ($columns as $column) {
             $rule = [];

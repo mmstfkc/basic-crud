@@ -12,6 +12,6 @@ class StoreRequest extends BaseRequest
      */
     public function rules(): array
     {
-        return $this->getRules('store', $this->getColumns(), $this->getColumnTypes());
+        return $this->getRules('store');
     }
 }
