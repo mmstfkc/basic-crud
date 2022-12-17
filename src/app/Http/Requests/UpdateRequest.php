@@ -4,7 +4,7 @@ namespace Mmstfkc\BasicCrud\app\Http\Requests;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
 
-class StoreRequest extends BaseRequest
+class UpdateRequest extends BaseRequest
 {
     /**
      * @return array
@@ -12,6 +12,6 @@ class StoreRequest extends BaseRequest
      */
     public function rules(): array
     {
-        return $this->getRules('store');
+        return $this->getRules('update');
     }
 }

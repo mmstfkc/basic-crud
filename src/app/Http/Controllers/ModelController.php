@@ -76,9 +76,18 @@ class ModelController extends Controller
 
     }
 
-    public function update(UpdateRequest $request, int $id)
+    /**
+     * @param UpdateRequest $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(UpdateRequest $request, int $id): JsonResponse
     {
-        dd('update');
+        if ($this->model->where('id', $id)->first()->update($request->validated())) {
+            return $this->sendSuccessResponse();
+        }
+
+        return $this->sendError();
     }
 
     /**
@@ -106,7 +115,11 @@ class ModelController extends Controller
         ]);
     }
 
-    public function sendError($data = null)
+    /**
+     * @param $data
+     * @return JsonResponse
+     */
+    public function sendError($data = null): JsonResponse
     {
         return response()->json([
             'status' => false,
@@ -115,5 +128,4 @@ class ModelController extends Controller
             'error' => $data
         ]);
     }
-
 }
