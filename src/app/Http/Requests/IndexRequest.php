@@ -2,6 +2,7 @@
 
 namespace Mmstfkc\BasicCrud\app\Http\Requests;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Mmstfkc\BasicCrud\Rules\MultipleFilter;
 
 class IndexRequest extends BaseRequest
@@ -10,10 +11,10 @@ class IndexRequest extends BaseRequest
      * Get the validation rules that apply to the request.
      *
      * @return array
+     * @throws BindingResolutionException
      */
     public function rules(): array
     {
-
         $column = $this->getColumnName($this->route()->getController()->modelName, 'index');
 
         return [
