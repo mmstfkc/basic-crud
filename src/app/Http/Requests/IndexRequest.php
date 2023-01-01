@@ -13,6 +13,7 @@ class IndexRequest extends BaseRequest
      */
     public function rules(): array
     {
+
         $column = $this->getColumnName($this->route()->getController()->modelName, 'index');
 
         return [

@@ -3,6 +3,8 @@
 namespace Mmstfkc\BasicCrud\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Mmstfkc\BasicCrud\app\Http\Requests\IndexRequest;
 use Mmstfkc\BasicCrud\app\Http\Requests\StoreRequest;
@@ -15,6 +17,7 @@ class ModelController extends Controller
 {
     protected BaseRepository $repository;
     protected ?string $indexRequest;
+    public string $modelName;
 
     /**
      * @param string $modelName
@@ -22,7 +25,8 @@ class ModelController extends Controller
      */
     public function __construct(string $modelName, string $indexRequest = null)
     {
-        $this->repository = new BaseRepository($modelName);
+        $this->modelName = $modelName;
+        $this->repository = new BaseRepository($this->modelName);
         $this->indexRequest = $indexRequest;
     }
 
