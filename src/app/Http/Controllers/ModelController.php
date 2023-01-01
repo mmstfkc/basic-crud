@@ -3,31 +3,26 @@
 namespace Mmstfkc\BasicCrud\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Mmstfkc\BasicCrud\app\Http\Requests\IndexRequest;
 use Mmstfkc\BasicCrud\app\Http\Requests\StoreRequest;
 use Mmstfkc\BasicCrud\app\Http\Requests\UpdateRequest;
 use Mmstfkc\BasicCrud\app\Http\Resources\IndexResource;
 use Mmstfkc\BasicCrud\app\Http\Resources\PaginateResource;
+use Mmstfkc\BasicCrud\app\Repositories\BaseRepository;
 
 class ModelController extends Controller
 {
-    public string $modelName;
-    protected Model $model;
-
+    protected BaseRepository $repository;
     protected ?string $indexRequest;
 
     /**
      * @param string $modelName
      * @param string|null $indexRequest
-     * @throws BindingResolutionException
      */
     public function __construct(string $modelName, string $indexRequest = null)
     {
-        $this->modelName = $modelName;
-        $this->model = app()->make($this->modelName);
+        $this->repository = new BaseRepository($modelName);
         $this->indexRequest = $indexRequest;
     }
 
@@ -37,17 +32,7 @@ class ModelController extends Controller
      */
     public function index(IndexRequest $request): JsonResponse
     {
-        $requestData = $request->validated();
-
-        $page = data_get($requestData, 'page', 1);
-        $limit = data_get($requestData, 'limit') ? data_get($requestData, 'limit') : config('basicCrud.max_limit');
-        $orderBy = data_get($requestData, 'order_by');
-        $where = data_get($requestData, 'where');
-        $like = data_get($requestData, 'like');
-
-        $dbData = $this->model->paginate($limit, ['*'], 'page', $page);
-
-        $dbData = new PaginateResource($dbData, IndexResource::class);
+        $dbData = new PaginateResource($this->repository->index($request->validated()), IndexResource::class);
 
         return $this->sendSuccessResponse($dbData);
     }
@@ -58,8 +43,7 @@ class ModelController extends Controller
      */
     public function detail(int $id): JsonResponse
     {
-        $data = $this->model->where('id', $id)->first();
-        return $this->sendSuccessResponse(new IndexResource($data));
+        return $this->sendSuccessResponse(new IndexResource($this->repository->detail($id)));
     }
 
     /**
@@ -68,7 +52,7 @@ class ModelController extends Controller
      */
     public function store(StoreRequest $request): JsonResponse
     {
-        if ($this->model->create($request->validated())) {
+        if ($this->repository->store($request->validated())) {
             return $this->sendSuccessResponse();
         }
 
@@ -83,7 +67,7 @@ class ModelController extends Controller
      */
     public function update(UpdateRequest $request, int $id): JsonResponse
     {
-        if ($this->model->where('id', $id)->first()->update($request->validated())) {
+        if ($this->repository->update($request->validated(), $id)) {
             return $this->sendSuccessResponse();
         }
 
@@ -96,16 +80,18 @@ class ModelController extends Controller
      */
     public function delete($id): JsonResponse
     {
-        $isDelete = $this->model->where('id', $id)->first()->delete();
-
-        if ($isDelete) {
+        if ($this->repository->delete($id)) {
             return $this->sendSuccessResponse();
         }
 
         return $this->sendError();
     }
 
-    public function sendSuccessResponse($data = null)
+    /**
+     * @param $data
+     * @return JsonResponse
+     */
+    public function sendSuccessResponse($data = null): JsonResponse
     {
         return response()->json([
             'status' => true,
