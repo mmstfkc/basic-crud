@@ -34,6 +34,9 @@ class BaseRepository
     protected array $errors;
 
 
+    /**
+     * @param string $modelName
+     */
     public function __construct(string $modelName)
     {
         $this->model = app($modelName);
@@ -41,6 +44,9 @@ class BaseRepository
         $this->setQuery();
     }
 
+    /**
+     * @return Builder
+     */
     public function getQuery(): Builder
     {
         return $this->query;
@@ -49,7 +55,7 @@ class BaseRepository
     /**
      * @return void
      */
-    public function setQuery()
+    public function setQuery(): void
     {
         $this->query = $this->model->newQuery();
     }
@@ -62,46 +68,71 @@ class BaseRepository
     {
         $page = data_get($data, 'page', 1);
         $limit = data_get($data, 'limit') ? data_get($data, 'limit') : config('basicCrud.max_limit');
-        $orderBy = data_get($data, 'order_by');
+
+        $orderBy = data_get($data, 'order_by', [['id' => 'asc']]);
+
         $where = data_get($data, 'where');
+        $whereIn = data_get($data, 'where_in');
+        $whereNotIn = data_get($data, 'where_not_in');
         $like = data_get($data, 'like');
-        $ilike = data_get($data, 'ilike', false);
+        $ilike = data_get($data, 'ilike');
 
-        if ($where) {
-            $this->filter(['where' => $where]);
-        }
+        $this->filter(
+            [
+                'where' => $where,
+                'whereIn' => $whereIn,
+                'whereNotIn' => $whereNotIn,
+                'like' => $like,
+                'ilike' => $ilike,
+            ]);
 
-        if ($like) {
-            if ($ilike) {
-                $this->filter(['ilike' => $like], true);
-            } else {
-                $this->filter(['like' => $like], true);
-            }
-        }
+        $this->sort($orderBy);
 
         return $this->paginate($limit, $page);
     }
 
-    public function detail(int $id)
+    /**
+     * @param int $id
+     * @return mixed
+     */
+    public function detail(int $id): mixed
     {
         return $this->model->where('id', $id)->first();
     }
 
-    public function store(array $data)
+    /**
+     * @param array $data
+     * @return mixed
+     */
+    public function store(array $data): mixed
     {
         return $this->model->create($data);
     }
 
-    public function update(array $data, int $id)
+    /**
+     * @param array $data
+     * @param int $id
+     * @return mixed
+     */
+    public function update(array $data, int $id): mixed
     {
         return $this->model->where('id', $id)->first()->update($data);
     }
 
-    public function delete(int $id)
+    /**
+     * @param int $id
+     * @return mixed
+     */
+    public function delete(int $id): mixed
     {
         return $this->model->where('id', $id)->first()->delete();
     }
 
+    /**
+     * @param int $limit
+     * @param int $page
+     * @return LengthAwarePaginator
+     */
     public function paginate(int $limit = 6, int $page = 1): LengthAwarePaginator
     {
         return $this->query->paginate($limit, ['*'], 'page', $page);
@@ -109,28 +140,19 @@ class BaseRepository
 
     /**
      * @param array $filters
-     * @param bool $isLike
      * @return $this
      */
-    protected function filter(array $filters, bool $isLike = false): static
+    protected function filter(array $filters): static
     {
-        foreach ($filters as $filterKey => $filterData) {
-            $method = $filterKey;
-
-            foreach ($filterData as $filterDatum) {
-                $operator = data_get($filterDatum, config('basicCrud.filter_operator_key'));
-                unset($filterDatum[config('basicCrud.filter_operator_key')]);
-
-                if ($isLike) {
-                    $operator = $method;
-                    $method = 'where';
-                }
-
-                foreach ($filterDatum as $key => $value) {
-                    if (!is_null($operator)) {
-                        $this->query->{$method}($this->table . '.' . $key, $operator, $value);
-                    } else {
-                        $this->query->{$method}($this->table . '.' . $key, $value);
+        foreach ($filters as $filterKey => $filterValues) {
+            if ($filterValues) {
+                foreach ($filterValues as $filterValue) {
+                    foreach ($filterValue as $key => $value) {
+                        if ($filterKey == 'like' || $filterKey == 'ilike') {
+                            $this->query->where($this->table . '.' . $key, $filterKey, $value);
+                        } else {
+                            $this->query->{$filterKey}($this->table . '.' . $key, $value);
+                        }
                     }
                 }
             }
@@ -139,6 +161,24 @@ class BaseRepository
         return $this;
     }
 
+    /**
+     * @param array $orderBy
+     * @return $this
+     */
+    protected function sort(array $orderBy): static
+    {
+        foreach ($orderBy as $orderByItem) {
+            foreach ($orderByItem as $key => $value) {
+                $this->query->orderByRaw($key . ' ' . $value);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
     protected function fill(array $data): array
     {
         foreach (array_keys($data) as $field) {

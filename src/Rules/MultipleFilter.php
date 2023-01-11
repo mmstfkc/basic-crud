@@ -48,14 +48,13 @@ class MultipleFilter implements Rule
 
         foreach ($value as $key => $item) {
             if (in_array($key, $this->keyText) || $key === config('basicCrud.filter_operator_key')) {
-
                 if ($this->valueText) {
-                    if (in_array($value, $this->valueText)) {
-                        return true;
+                    foreach ($value as $valueItem) {
+                        if (!in_array($valueItem, $this->valueText)) {
+                            $this->errorMessage = trans('please_enter_a_valid_key_or_value');
+                            return false;
+                        }
                     }
-                    $this->errorMessage = trans('please_enter_a_valid_key_or_value');
-
-                    return false;
                 }
 
                 return true;

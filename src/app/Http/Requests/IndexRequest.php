@@ -22,11 +22,20 @@ class IndexRequest extends BaseRequest
             'limit' => 'required_with:page|integer|min:1|max:' . config('basicCrud.max_limit'),
             'order_by' => 'nullable|array',
             'order_by.*' => ['nullable', new MultipleFilter($column, ['asc', 'desc'])],
+
             'where' => 'nullable|array',
             'where.*' => ['nullable', new MultipleFilter($column)],
+            'where_in' => 'nullable|array',
+            'where_in.*' => ['nullable', new MultipleFilter($column)],
+            'where_not_in' => 'nullable|array',
+            'where_not_in.*' => ['nullable', new MultipleFilter($column)],
+
             'like' => 'nullable|array',
             'like.*' => ['nullable', new MultipleFilter($column)],
-            'ilike' => 'nullable|boolean'
+
+            'ilike' => 'nullable|array',
+            'ilike.*' => ['nullable', new MultipleFilter($column)],
+
         ];
     }
 }
