@@ -2,6 +2,7 @@
 
 namespace Mmstfkc\BasicCrud\app\Http\Requests;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Mmstfkc\BasicCrud\Rules\MultipleFilter;
 
 class IndexRequest extends BaseRequest
@@ -10,6 +11,7 @@ class IndexRequest extends BaseRequest
      * Get the validation rules that apply to the request.
      *
      * @return array
+     * @throws BindingResolutionException
      */
     public function rules(): array
     {
@@ -19,11 +21,21 @@ class IndexRequest extends BaseRequest
             'page' => 'required_with:limit|integer|min:1',
             'limit' => 'required_with:page|integer|min:1|max:' . config('basicCrud.max_limit'),
             'order_by' => 'nullable|array',
-            'order_by.*' => ['nullable', 'string', new MultipleFilter($column, ['asc', 'desc'])],
+            'order_by.*' => ['nullable', new MultipleFilter($column, ['asc', 'desc'])],
+
             'where' => 'nullable|array',
-            'where.*' => ['nullable', 'string', 'min:1', new MultipleFilter($column)],
+            'where.*' => ['nullable', new MultipleFilter($column)],
+            'where_in' => 'nullable|array',
+            'where_in.*' => ['nullable', new MultipleFilter($column)],
+            'where_not_in' => 'nullable|array',
+            'where_not_in.*' => ['nullable', new MultipleFilter($column)],
+
             'like' => 'nullable|array',
-            'like.*' => ['nullable', 'string', new MultipleFilter($column)],
+            'like.*' => ['nullable', new MultipleFilter($column)],
+
+            'ilike' => 'nullable|array',
+            'ilike.*' => ['nullable', new MultipleFilter($column)],
+
         ];
     }
 }
