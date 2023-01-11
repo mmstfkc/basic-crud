@@ -3,10 +3,11 @@ Projenin kurulumu için aşağıdaki komutu çalıştırmalısınız.
 ```bash
   composer require mmstfkc/basic-crud
 ```
+
 (Opsiyonel)
 Hata mesajlarının Paketteki şekilde gelmesi istenirse aşağıdaki aşamaları takip edebilirsiniz.
 
-Aşağıdaki dosyaya gidiyoruz ve komutları ekliyoruz.
+Aşağıdaki dosyaya gidip, komutları ekliyoruz. <br><br>
 app/Exceptions/Handler.php:56
 
 ```php
@@ -61,11 +62,17 @@ app/Exceptions/Handler.php:56
 ```
 
 # Paketin Kullanımı
+
 Paket kurulumunu tamamladıktan sonra yapmamız gereken işlemler sırası ile şunlardır.
 
 ## Controller
-Bir Controller oluşturup modeldeki fonsiyonu bu modele extend ediyoruz. ModelController Sizin kendi dizininizde bulunan "App\Http\Controllers\Controller" tarafından extend edilmektedir. Orada yaptığınız değişiklikler paketinde etkilenmesine sebep olacaktır.
-Örnek Controller dosyanız aşağıdaki gibi olabilir.
+
+Bir Controller oluşturup bu controllara ModelController classını extend ediyoruz. 
+<br><br> :warning:
+ModelController Sizin kendi dizininizde bulunan "App\Http\Controllers\Controller" tarafından extend edilmektedir.
+Orada yaptığınız değişiklikler paketinde etkilenmesine sebep olacaktır. :warning:
+<br><br>Örnek Controller dosyanız aşağıdaki gibi olabilir.
+
 ```php
 <?php
 
@@ -84,8 +91,10 @@ class UserController extends ModelController
 ```
 
 ## Route
+
 Bu endpointlere istek atabilmemiz için aşağıdaki komutu route/api.php dosyasına ekleyebilirsiniz.
-Örnek api.pyp dosyanız aşağıdaki gibi olabilir..
+<br><br>Örnek api.pyp dosyanız aşağıdaki gibi olabilir.
+
 ```php
 <?php
 
@@ -114,7 +123,9 @@ Route::group(['prefix' => 'users'], function () {
 ```
 
 Kendi index fonksiyonlarınızı yazmak isterseniz aşağıdaki gibi bir kullanım sağlayabilirsiniz.
+
 ### Index
+
 ```php
 <?php
 
