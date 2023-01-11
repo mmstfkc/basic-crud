@@ -3,8 +3,6 @@
 namespace Mmstfkc\BasicCrud\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Mmstfkc\BasicCrud\app\Http\Requests\IndexRequest;
 use Mmstfkc\BasicCrud\app\Http\Requests\StoreRequest;
@@ -34,7 +32,7 @@ class ModelController extends Controller
      * @param IndexRequest $request
      * @return JsonResponse
      */
-    public function index(IndexRequest $request): JsonResponse
+    public function modelIndex(IndexRequest $request): JsonResponse
     {
         $dbData = new PaginateResource($this->repository->index($request->validated()), IndexResource::class);
 
@@ -45,7 +43,7 @@ class ModelController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function detail(int $id): JsonResponse
+    public function modelDetail(int $id): JsonResponse
     {
         return $this->sendSuccessResponse(new IndexResource($this->repository->detail($id)));
     }
@@ -54,7 +52,7 @@ class ModelController extends Controller
      * @param StoreRequest $request
      * @return JsonResponse
      */
-    public function store(StoreRequest $request): JsonResponse
+    public function modelStore(StoreRequest $request): JsonResponse
     {
         if ($this->repository->store($request->validated())) {
             return $this->sendSuccessResponse();
@@ -69,7 +67,7 @@ class ModelController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function update(UpdateRequest $request, int $id): JsonResponse
+    public function modelUpdate(UpdateRequest $request, int $id): JsonResponse
     {
         if ($this->repository->update($request->validated(), $id)) {
             return $this->sendSuccessResponse();
@@ -82,7 +80,7 @@ class ModelController extends Controller
      * @param $id
      * @return JsonResponse
      */
-    public function delete($id): JsonResponse
+    public function modelDelete($id): JsonResponse
     {
         if ($this->repository->delete($id)) {
             return $this->sendSuccessResponse();
