@@ -33,7 +33,6 @@ class BaseRepository
      */
     protected array $errors;
 
-
     /**
      * @param string $modelName
      */
@@ -173,20 +172,5 @@ class BaseRepository
             }
         }
         return $this;
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     */
-    protected function fill(array $data): array
-    {
-        foreach (array_keys($data) as $field) {
-            if (!$this->model->isFillable($field)) {
-                unset($data[$field]);
-            }
-        }
-
-        return $data;
     }
 }
