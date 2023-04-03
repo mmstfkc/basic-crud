@@ -1,13 +1,13 @@
-Projenin kurulumu için aşağıdaki komutu çalıştırmalısınız.
+You should run the following command for installation of the project.
 
 ```bash
   composer require mmstfkc/basic-crud
 ```
 
-(Opsiyonel)
-Hata mesajlarının Paketteki şekilde gelmesi istenirse aşağıdaki aşamaları takip edebilirsiniz.
+(Optional)
+If you want the error messages to be displayed as in the package, you can follow the steps below.
 
-Aşağıdaki dosyaya gidip, komutları ekliyoruz. <br><br>
+Go to the file below and add the commands. <br><br>
 app/Exceptions/Handler.php:56
 
 ```php
@@ -61,17 +61,19 @@ app/Exceptions/Handler.php:56
     }
 ```
 
-# Paketin Kullanımı
+# Usage of the Package
 
-Paket kurulumunu tamamladıktan sonra yapmamız gereken işlemler sırası ile şunlardır.
+After completing the package installation, the necessary steps to follow are as follows:
 
 ## Controller
 
-Bir Controller oluşturup bu controllara ModelController classını extend ediyoruz. 
-<br><br> :warning:
-ModelController Sizin kendi dizininizde bulunan "App\Http\Controllers\Controller" tarafından extend edilmektedir.
-Orada yaptığınız değişiklikler paketinde etkilenmesine sebep olacaktır. :warning:
-<br><br>Örnek Controller dosyanız aşağıdaki gibi olabilir.
+We create a controller and extend ModelController class to these controllers.
+
+:warning:
+ModelController is extended from "App\Http\Controllers\Controller" located in your own directory.
+Any changes you make there will affect the package. :warning:
+
+Example of your Controller file can be as follows.
 
 ```php
 <?php
@@ -92,8 +94,9 @@ class UserController extends ModelController
 
 ## Route
 
-Bu endpointlere istek atabilmemiz için aşağıdaki komutu route/api.php dosyasına ekleyebilirsiniz.
-<br><br>Örnek api.pyp dosyanız aşağıdaki gibi olabilir.
+To be able to make requests to these endpoints, you can add the following command to your route/api.php file.
+
+Example api.php file can be as follows:
 
 ```php
 <?php
@@ -101,17 +104,6 @@ Bu endpointlere istek atabilmemiz için aşağıdaki komutu route/api.php dosyas
 use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
 
 Route::group(['prefix' => 'users'], function () {
     Route::get('', [UserController::class, 'modelIndex']);
@@ -122,9 +114,7 @@ Route::group(['prefix' => 'users'], function () {
 });
 ```
 
-Kendi index fonksiyonlarınızı yazmak isterseniz aşağıdaki gibi bir kullanım sağlayabilirsiniz.
-
-### Index
+To write your own functions, you can use the following example usage:
 
 ```php
 <?php
@@ -194,3 +184,5 @@ class UserController extends ModelController
 }
 ```
 
+You can define your own functions inside your controller class that extends the ModelController.<br> 
+After defining your function, you can access it using the appropriate HTTP method and route in your routes/api.php file.

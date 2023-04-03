@@ -27,6 +27,10 @@ class IndexRequest extends BaseRequest
             'where.*' => ['nullable', new MultipleFilter($column)],
             'where_in' => 'nullable|array',
             'where_in.*' => ['nullable', new MultipleFilter($column)],
+            'where_date' => 'nullable|array',
+            'where_date.*' => ['nullable', new MultipleFilter($column)],
+            'where_time' => 'nullable|array',
+            'where_time.*' => ['nullable', new MultipleFilter($column)],
             'where_not_in' => 'nullable|array',
             'where_not_in.*' => ['nullable', new MultipleFilter($column)],
 
