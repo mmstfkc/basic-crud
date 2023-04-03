@@ -73,6 +73,8 @@ class BaseRepository
         $where = data_get($data, 'where');
         $whereIn = data_get($data, 'where_in');
         $whereNotIn = data_get($data, 'where_not_in');
+        $whereDate = data_get($data, 'where_date');
+        $whereTime = data_get($data, 'where_time');
         $like = data_get($data, 'like');
         $ilike = data_get($data, 'ilike');
 
@@ -81,6 +83,8 @@ class BaseRepository
                 'where' => $where,
                 'whereIn' => $whereIn,
                 'whereNotIn' => $whereNotIn,
+                'whereDate' => $whereDate,
+                'whereTime' => $whereTime,
                 'like' => $like,
                 'ilike' => $ilike,
             ]);
