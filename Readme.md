@@ -186,3 +186,5 @@ class UserController extends ModelController
 
 You can define your own functions inside your controller class that extends the ModelController.<br> 
 After defining your function, you can access it using the appropriate HTTP method and route in your routes/api.php file.
+
+This project is licensed under the MIT License. See the [LICENSE.md](LICENSE.md) file for details.
