@@ -39,17 +39,6 @@ class BaseRequest extends FormRequest
      */
     protected function getColumnName(string $modelName, string $functionName): array
     {
-        return $this->getColumnNameForPostgreSQL($modelName, $functionName);
-    }
-
-    /**
-     * @param string $modelName
-     * @param string $functionName
-     * @return array
-     * @throws BindingResolutionException
-     */
-    protected function getColumnNameForPostgreSQL(string $modelName, string $functionName): array
-    {
         $model = app()->make($modelName);
         $allColumnNames = DB::getSchemaBuilder()->getColumnListing($model->getTable());
 
@@ -95,6 +84,11 @@ class BaseRequest extends FormRequest
      */
     protected function getColumnTypes(): Collection
     {
+
+        if (env('DB_CONNECTION') == 'mysql') {
+            return $this->getColumnTypesForMySQL();
+        }
+
         return $this->getColumnTypesForPostgreSql();
     }
 
@@ -106,7 +100,6 @@ class BaseRequest extends FormRequest
     {
         $modelName = $this->route()->getController()->modelName;
         $model = app()->make($modelName);
-
 
         $tableName = $model->getTable();
         return DB::table('information_schema.columns')->where('table_name', $tableName)
@@ -121,6 +114,30 @@ class BaseRequest extends FormRequest
                 'numeric_scale',)
             ->get();
     }
+
+    /**
+     * @return Collection
+     * @throws BindingResolutionException
+     */
+    protected function getColumnTypesForMySQL(): Collection
+    {
+        $modelName = $this->route()->getController()->modelName;
+        $model = app()->make($modelName);
+
+        $tableName = $model->getTable();
+        return DB::table('INFORMATION_SCHEMA.COLUMNS')
+            ->selectRaw('COLUMN_NAME AS column_name')
+            ->selectRaw('IS_NULLABLE AS is_nullable')
+            ->selectRaw('DATA_TYPE AS data_type')
+            ->selectRaw('DATA_TYPE AS udt_name')
+            ->selectRaw('CHARACTER_MAXIMUM_LENGTH AS character_maximum_length')
+            ->selectRaw('COLUMN_TYPE AS column_type')
+            ->selectRaw('NUMERIC_PRECISION AS numeric_precision')
+            ->selectRaw('NUMERIC_SCALE AS numeric_scale')
+            ->where('TABLE_NAME', $tableName)
+            ->get();
+    }
+
 
     /**
      * @param string $method
