@@ -4,6 +4,11 @@ You should run the following command for installation of the project.
   composer require mmstfkc/basic-crud
 ```
 
+Copy Config File
+```bash
+  cp vendor/mmstfkc/basic-crud/src/config/basicCrud.php config
+```
+
 (Optional)
 If you want the error messages to be displayed as in the package, you can follow the steps below.
 
