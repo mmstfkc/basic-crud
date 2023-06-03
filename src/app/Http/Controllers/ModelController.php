@@ -14,18 +14,15 @@ use Mmstfkc\BasicCrud\app\Repositories\BaseRepository;
 class ModelController extends Controller
 {
     protected BaseRepository $repository;
-    protected ?string $indexRequest;
     public string $modelName;
 
     /**
      * @param string $modelName
-     * @param string|null $indexRequest
      */
-    public function __construct(string $modelName, string $indexRequest = null)
+    public function __construct(string $modelName)
     {
         $this->modelName = $modelName;
         $this->repository = new BaseRepository($this->modelName);
-        $this->indexRequest = $indexRequest;
     }
 
     /**
