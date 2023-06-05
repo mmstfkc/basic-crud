@@ -5,6 +5,7 @@ You should run the following command for installation of the project.
 ```
 
 Copy Config File
+
 ```bash
   cp vendor/mmstfkc/basic-crud/src/config/basicCrud.php config
 ```
@@ -189,7 +190,38 @@ class UserController extends ModelController
 }
 ```
 
-You can define your own functions inside your controller class that extends the ModelController.<br> 
+You can define your own functions inside your controller class that extends the ModelController.<br>
 After defining your function, you can access it using the appropriate HTTP method and route in your routes/api.php file.
+
+## Filter
+
+http://localhost/api/users?where[0][id]=1
+
+Here, "where" is a filtering parameter used to filter users. The part "where[0][id]=1" specifies the filtering
+condition. So, this request is used to retrieve users with the "id" property equal to 1.
+
+Here are some examples of the filtering parameters:
+
+- <b>where</b>In: Retrieves users with a specific property matching one or more specified values. <br> For
+  example: http://localhost/api/users?whereIn[0][status]=active,verified This request retrieves users with the "status"
+  property equal to either "active" or "verified".
+- <b>where</b>NotIn: Retrieves users with a specific property not matching any of the specified values. <br> For
+  example: http://localhost/api/users?whereNotIn[0][role]=admin,superuser This request retrieves users with the "role"
+  property not equal to "admin" or "superuser".
+- <b>where</b>Date: Retrieves users born on a specific date or having a specific date property. <br> For
+  example: http://localhost/api/users?whereDate[0][birthdate]=2023-01-01 This request retrieves users with the "
+  birthdate" property equal to 2023-01-01.
+- <b>where</b>Time: Retrieves users born at a specific time or within a specific time range. <br> For
+  example: http://localhost/api/users?whereTime[0][created_at]=15:00:00 This request retrieves users with the "
+  created_at" property equal to 15:00:00.
+- <b>like:</b> Retrieves users with a specific property containing a specific text. <br> For
+  example: http://localhost/api/users?like[0][name]=John This request retrieves users with the "name" property
+  containing the text "John".
+- <b>ilike</b>: Retrieves users with a specific property containing a specific text case-insensitively. <br> For
+  example: http://localhost/api/users?ilike[0][email]=john This request retrieves users with the "email" property
+  containing the text "john" regardless of case.
+
+By using these filtering parameters, you can make your requests more readable and filter users based on specific
+criteria.
 
 This project is licensed under the MIT License. See the [LICENSE.md](LICENSE.md) file for details.
